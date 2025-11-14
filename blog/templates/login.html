@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+
+{% block title %}تسجيل الدخول{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="fas fa-sign-in-alt auth-icon"></i>
+                <h2>تسجيل الدخول</h2>
+                <p>مرحباً بعودتك! سجل دخولك للمتابعة</p>
+            </div>
+            
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i> اسم المستخدم
+                    </label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i> كلمة المرور
+                    </label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="remember">
+                        <span>تذكرني</span>
+                    </label>
+                    <a href="/forgot-password/" class="forgot-link">نسيت كلمة المرور؟</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-block">
+                    <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
+                </button>
+                
+                <div class="auth-footer">
+                    <p>ليس لديك حساب؟ <a href="/register/">سجل الآن</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.auth-section {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    padding: 4rem 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+}
+
+.auth-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1920') center/cover;
+    opacity: 0.1;
+}
+
+.auth-card {
+    max-width: 500px;
+    margin: 0 auto;
+    background: white;
+    border-radius: var(--radius);
+    padding: 3rem;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    z-index: 2;
+    animation: slideUp 0.6s ease-out;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-icon {
+    font-size: 4rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.auth-header h2 {
+    font-size: 2rem;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: var(--gray);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.form-group label i {
+    color: var(--primary);
+    margin-left: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Cairo', sans-serif;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.forgot-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+.btn-block {
+    width: 100%;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+
+.auth-footer a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+}
+
+.alert-danger {
+    background: #fee2e2;
+    color: var(--danger);
+    border: 1px solid #fecaca;
+}
+
+.alert-success {
+    background: #d1fae5;
+    color: var(--success);
+    border: 1px solid #a7f3d0;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    
+    try {
+        showLoading();
+        
+        const data = await apiCall('/auth/login/', {
+            method: 'POST',
+            body: JSON.stringify({ username, password })
+        });
+        
+        // Success
+        alert('تم تسجيل الدخول بنجاح!');
+        window.location.href = '/';
+        
+    } catch (error) {
+        hideLoading();
+        
+        // Show error
+        const form = document.getElementById('loginForm');
+        let alertDiv = form.querySelector('.alert');
+        
+        if (!alertDiv) {
+            alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger';
+            form.insertBefore(alertDiv, form.firstChild);
+        }
+        
+        alertDiv.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة';
+    }
+});
+</script>
+{% endblock %}

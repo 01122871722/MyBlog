@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<section class="category-hero">
+    <div class="container">
+        <div id="categoryHero" class="category-hero-content">
+            <!-- سيتم تعبئتها بـ JavaScript -->
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="posts-grid" id="categoryPosts">
+            <!-- سيتم تعبئتها بـ JavaScript -->
+        </div>
+        
+        <div class="load-more-container">
+            <button class="btn btn-primary" id="loadMoreBtn" style="display: none;">
+                <i class="fas fa-sync-alt"></i>
+                تحميل المزيد
+            </button>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.category-hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    padding: 6rem 0 3rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.category-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1920') center/cover;
+    opacity: 0.1;
+}
+
+.category-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.category-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+}
+
+.category-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.category-description {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 1rem;
+}
+
+.category-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    opacity: 0.9;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentPage = 1;
+let isLoading = false;
+let filterType = ''; // 'category' or 'tag'
+let filterSlug = '';
+
+async function loadCategoryOrTag() {
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    filterType = pathParts[0]; // 'category' or 'tag'
+    filterSlug = pathParts[1];
+    
+    try {
+        showLoading();
+        
+        let data;
+        if (filterType === 'category') {
+            data = await apiCall(`/categories/${filterSlug}/`);
+            renderCategoryHero(data);
+        } else {
+            data = await apiCall(`/tags/${filterSlug}/`);
+            renderTagHero(data);
+        }
+        
+        loadPosts();
+        
+    } catch (error) {
+        console.error('Error loading:', error);
+        document.getElementById('categoryHero').innerHTML = '<h1 style="color: white;">غير موجود</h1>';
+    } finally {
+        hideLoading();
+    }
+}
+
+function renderCategoryHero(category) {
+    document.getElementById('categoryHero').innerHTML = `
+        <i class="fas fa-folder category-icon"></i>
+        <h1>${category.name}</h1>
+        <p class="category-description">${category.description || 'تصفح جميع المقالات في هذه الفئة'}</p>
+        <div class="category-meta">
+            <span><i class="fas fa-newspaper"></i> ${category.posts_count} مقال</span>
+        </div>
+    `;
+}
+
+function renderTagHero(tag) {
+    document.getElementById('categoryHero').innerHTML = `
+        <i class="fas fa-tag category-icon"></i>
+        <h1>${tag.name}</h1>
+        <p class="category-description">جميع المقالات المرتبطة بهذا الوسم</p>
+        <div class="category-meta">
+            <span><i class="fas fa-newspaper"></i> ${tag.posts_count || 0} مقال</span>
+        </div>
+    `;
+}
+
+async function loadPosts(append = false) {
+    if (isLoading) return;
+    
+    try {
+        isLoading = true;
+        if (!append) showLoading();
+        
+        let url = `/posts/?page=${currentPage}&status=published`;
+        
+        // Get filter value from API
+        if (filterType === 'category') {
+            // البحث عن الفئة للحصول على الـ ID
+            const categoryData = await apiCall(`/categories/${filterSlug}/`);
+            url += `&category=${categoryData.id}`;
+        } else {
+            // البحث عن الوسم للحصول على الـ ID
+            const tagData = await apiCall(`/tags/${filterSlug}/`);
+            url += `&tags=${tagData.id}`;
+        }
+        
+        const data = await apiCall(url);
+        
+        const container = document.getElementById('categoryPosts');
+        
+        if (!append) {
+            container.innerHTML = '';
+        }
+        
+        if (data.results.length === 0 && !append) {
+            container.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">لا توجد مقالات</p>';
+        } else {
+            const postsHTML = data.results.map(post => createPostCard(post)).join('');
+            if (append) {
+                container.innerHTML += postsHTML;
+            } else {
+                container.innerHTML = postsHTML;
+            }
+        }
+        
+        // Handle load more button
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        if (data.next) {
+            loadMoreBtn.style.display = 'inline-flex';
+            loadMoreBtn.onclick = () => {
+                currentPage++;
+                loadPosts(true);
+            };
+        } else {
+            loadMoreBtn.style.display = 'none';
+        }
+        
+    } catch (error) {
+        console.error('Error loading posts:', error);
+        if (!append) {
+            document.getElementById('categoryPosts').innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: var(--danger);">حدث خطأ في تحميل المقالات</p>';
+        }
+    } finally {
+        isLoading = false;
+        hideLoading();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    loadCategoryOrTag();
+});
+</script>
+{% endblock %}

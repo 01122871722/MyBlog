@@ -1,0 +1,371 @@
+{% extends 'base.html' %}
+
+{% block title %}مقالاتي{% endblock %}
+
+{% block content %}
+<section class="my-posts-hero">
+    <div class="container">
+        <h1><i class="fas fa-folder-open"></i> مقالاتي</h1>
+        <p>إدارة جميع مقالاتك من مكان واحد</p>
+        <a href="/create-post/" class="btn btn-secondary">
+            <i class="fas fa-plus"></i> مقال جديد
+        </a>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">
+                <i class="fas fa-th"></i> الكل
+            </button>
+            <button class="filter-tab" data-filter="published">
+                <i class="fas fa-check-circle"></i> المنشورة
+            </button>
+            <button class="filter-tab" data-filter="draft">
+                <i class="fas fa-clock"></i> المسودات
+            </button>
+        </div>
+        
+        <!-- Posts List -->
+        <div class="my-posts-list" id="myPostsList">
+            <!-- سيتم تعبئتها بـ JavaScript -->
+        </div>
+    </div>
+</section>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <h3><i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> تأكيد الحذف</h3>
+        <p>هل أنت متأكد من حذف هذا المقال؟ لا يمكن التراجع عن هذا الإجراء.</p>
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button class="btn btn-danger" id="confirmDelete">
+                <i class="fas fa-trash"></i> حذف
+            </button>
+            <button class="btn btn-secondary" onclick="closeDeleteModal()">
+                <i class="fas fa-times"></i> إلغاء
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.my-posts-hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    padding: 6rem 0 3rem;
+    text-align: center;
+    color: white;
+}
+
+.my-posts-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.my-posts-hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.filter-tab {
+    padding: 1rem 2rem;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.filter-tab:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.filter-tab.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.my-posts-list {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.my-post-item {
+    background: white;
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    display: grid;
+    grid-template-columns: 150px 1fr auto;
+    gap: 2rem;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.my-post-item:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.my-post-image {
+    width: 150px;
+    height: 100px;
+    border-radius: var(--radius);
+    object-fit: cover;
+}
+
+.my-post-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.my-post-meta {
+    display: flex;
+    gap: 1.5rem;
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.post-status {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.post-status.published {
+    background: #d1fae5;
+    color: var(--success);
+}
+
+.post-status.draft {
+    background: #fee2e2;
+    color: var(--warning);
+}
+
+.my-post-actions {
+    display: flex;
+    gap: 0.8rem;
+}
+
+.action-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn.view {
+    background: var(--primary);
+    color: white;
+}
+
+.action-btn.edit {
+    background: var(--warning);
+    color: white;
+}
+
+.action-btn.delete {
+    background: var(--danger);
+    color: white;
+}
+
+.action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+@media (max-width: 768px) {
+    .my-post-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .my-post-image {
+        margin: 0 auto;
+    }
+    
+    .my-post-actions {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentFilter = 'all';
+let postToDelete = null;
+
+async function loadMyPosts() {
+    try {
+        showLoading();
+        
+        const user = await checkAuth();
+        if (!user) {
+            window.location.href = '/login/';
+            return;
+        }
+        
+        let url = '/posts/my_posts/';
+        if (currentFilter !== 'all') {
+            url += `?status=${currentFilter}`;
+        }
+        
+        const data = await apiCall(url);
+        
+        const container = document.getElementById('myPostsList');
+        
+        if (data.results.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 4rem;">
+                    <i class="fas fa-folder-open" style="font-size: 4rem; color: var(--gray); margin-bottom: 1rem;"></i>
+                    <h3 style="color: var(--gray);">لا توجد مقالات</h3>
+                    <p style="color: var(--gray); margin-bottom: 2rem;">ابدأ بكتابة مقالك الأول</p>
+                    <a href="/create-post/" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> مقال جديد
+                    </a>
+                </div>
+            `;
+        } else {
+            container.innerHTML = data.results.map(post => createMyPostItem(post)).join('');
+        }
+        
+    } catch (error) {
+        console.error('Error loading my posts:', error);
+        document.getElementById('myPostsList').innerHTML = '<p style="text-align: center; color: var(--danger);">حدث خطأ في تحميل المقالات</p>';
+    } finally {
+        hideLoading();
+    }
+}
+
+function createMyPostItem(post) {
+    const imageUrl = post.image || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400';
+    
+    return `
+        <div class="my-post-item">
+            <img src="${imageUrl}" alt="${post.title}" class="my-post-image">
+            <div class="my-post-info">
+                <h3>${post.title}</h3>
+                <div class="my-post-meta">
+                    <span><i class="fas fa-calendar"></i> ${formatDate(post.created_at)}</span>
+                    <span><i class="fas fa-eye"></i> ${post.views} مشاهدة</span>
+                    <span><i class="fas fa-comment"></i> ${post.comments_count || 0} تعليق</span>
+                </div>
+                <span class="post-status ${post.status}">
+                    ${post.status === 'published' ? 'منشور' : 'مسودة'}
+                </span>
+            </div>
+            <div class="my-post-actions">
+                <button class="action-btn view" onclick="window.location.href='/post/${post.slug}/'" title="عرض">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="action-btn edit" onclick="window.location.href='/edit-post/${post.slug}/'" title="تعديل">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="action-btn delete" onclick="openDeleteModal(${post.id}, '${post.slug}')" title="حذف">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// Filter tabs
+document.addEventListener('DOMContentLoaded', function() {
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    
+    filterTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            filterTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            currentFilter = this.dataset.filter;
+            loadMyPosts();
+        });
+    });
+    
+    loadMyPosts();
+});
+
+// Delete functions
+function openDeleteModal(id, slug) {
+    postToDelete = { id, slug };
+    document.getElementById('deleteModal').classList.add('active');
+}
+
+function closeDeleteModal() {
+    postToDelete = null;
+    document.getElementById('deleteModal').classList.remove('active');
+}
+
+document.getElementById('confirmDelete').addEventListener('click', async () => {
+    if (!postToDelete) return;
+    
+    try {
+        showLoading();
+        
+        const response = await fetch(`${API_URL}/posts/${postToDelete.slug}/`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            credentials: 'include'
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to delete post');
+        }
+        
+        closeDeleteModal();
+        hideLoading();
+        alert('تم حذف المقال بنجاح');
+        loadMyPosts();
+    } catch (error) {
+        hideLoading();
+        console.error('Error deleting post:', error);
+        alert('حدث خطأ في حذف المقال');
+    }
+});
+
+// Close modal on outside click
+document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDeleteModal();
+    }
+});
+</script>
+{% endblock %}

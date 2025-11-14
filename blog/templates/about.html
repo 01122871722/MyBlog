@@ -1,0 +1,482 @@
+{% extends 'base.html' %}
+
+{% block title %}عن المدونة{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="about-hero">
+    <div class="container">
+        <h1 class="animate-fade-in">عن مدونتنا</h1>
+        <p class="animate-slide-up">منصة تدوين احترافية لمشاركة المعرفة والإبداع</p>
+    </div>
+</section>
+
+<!-- About Content -->
+<section class="section">
+    <div class="container">
+        <div class="about-grid">
+            <div class="about-content">
+                <h2>قصتنا</h2>
+                <p>مدونتنا هي منصة تدوين احترافية تم تطويرها بأحدث التقنيات لتوفير تجربة تدوين سلسة وممتعة. نؤمن بقوة المحتوى الجيد وتأثيره في نشر المعرفة وتبادل الخبرات.</p>
+                
+                <h3>رؤيتنا</h3>
+                <p>نسعى لأن نكون المنصة الأولى للمدونين العرب، حيث يمكنهم مشاركة أفكارهم وإبداعاتهم مع جمهور واسع من القراء المهتمين.</p>
+                
+                <h3>مميزاتنا</h3>
+                <ul class="features-list">
+                    <li><i class="fas fa-check"></i> واجهة مستخدم احترافية وسهلة الاستخدام</li>
+                    <li><i class="fas fa-check"></i> نظام تعليقات تفاعلي</li>
+                    <li><i class="fas fa-check"></i> تصنيفات ووسوم متعددة للتنظيم</li>
+                    <li><i class="fas fa-check"></i> إحصائيات تفصيلية للمقالات</li>
+                    <li><i class="fas fa-check"></i> تصميم متجاوب مع جميع الأجهزة</li>
+                    <li><i class="fas fa-check"></i> أمان عالي وحماية من الهجمات</li>
+                </ul>
+            </div>
+            
+            <div class="about-sidebar">
+                <div class="about-card">
+                    <i class="fas fa-rocket about-card-icon"></i>
+                    <h3>سريع</h3>
+                    <p>تقنيات حديثة لتحميل سريع</p>
+                </div>
+                
+                <div class="about-card">
+                    <i class="fas fa-shield-alt about-card-icon"></i>
+                    <h3>آمن</h3>
+                    <p>حماية كاملة من الهجمات</p>
+                </div>
+                
+                <div class="about-card">
+                    <i class="fas fa-mobile-alt about-card-icon"></i>
+                    <h3>متجاوب</h3>
+                    <p>يعمل على جميع الأجهزة</p>
+                </div>
+                
+                <div class="about-card">
+                    <i class="fas fa-heart about-card-icon"></i>
+                    <h3>سهل</h3>
+                    <p>واجهة بسيطة وسهلة</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="section team-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-users"></i>
+                فريق العمل
+            </h2>
+            <p class="section-subtitle">الفريق المتميز خلف هذه المنصة</p>
+        </div>
+        
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3> Rania Ahmed</h3>
+                <p class="team-role">مطور Full Stack</p>
+                <div class="team-social">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            
+            
+            
+            
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<!-- Contact Section -->
+<section class="section contact-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-envelope"></i> تواصل معنا
+            </h2>
+            <p class="section-subtitle">نحن هنا للاستماع إليك</p>
+        </div>
+        
+        <div class="contact-grid">
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <h4>البريد الإلكتروني</h4>
+                        <p>raniaahmed200156@gmail.com</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <div>
+                        <h4>الهاتف</h4>
+                        <p>+20 1122871722</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <h4>العنوان</h4>
+                        <p>القاهرة، مصر</p>
+                    </div>
+                </div>
+            </div>
+            
+            <form class="contact-form" id="contactForm">
+                <div class="form-group">
+                    <input type="text" id="contactName" placeholder="الاسم" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="contactEmail" placeholder="البريد الإلكتروني" required>
+                </div>
+                <div class="form-group">
+                    <textarea id="contactMessage" rows="5" placeholder="رسالتك" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> إرسال
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.about-hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    padding: 8rem 0 4rem;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1920') center/cover;
+    opacity: 0.1;
+}
+
+.about-hero h1 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+}
+
+.about-hero p {
+    font-size: 1.5rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 2;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 3rem;
+}
+
+.about-content h2,
+.about-content h3 {
+    color: var(--dark);
+    margin: 2rem 0 1rem;
+}
+
+.about-content h2 {
+    font-size: 2rem;
+}
+
+.about-content p {
+    line-height: 2;
+    color: var(--gray);
+    margin-bottom: 1.5rem;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+}
+
+.features-list li {
+    padding: 0.8rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.features-list i {
+    color: var(--success);
+    font-size: 1.2rem;
+}
+
+.about-sidebar {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.about-card {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radius);
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.about-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-lg);
+}
+
+.about-card-icon {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.about-card h3 {
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.about-card p {
+    color: var(--gray);
+}
+
+.team-section {
+    background: var(--light);
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.team-card {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radius);
+    text-align: center;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.team-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-lg);
+}
+
+.team-avatar {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.team-avatar i {
+    font-size: 3rem;
+    color: white;
+}
+
+.team-card h3 {
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.team-role {
+    color: var(--gray);
+    margin-bottom: 1rem;
+}
+
+.team-social {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.team-social a {
+    width: 40px;
+    height: 40px;
+    background: var(--light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    transition: var(--transition);
+}
+
+.team-social a:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-3px);
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.contact-item {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.contact-item i {
+    width: 60px;
+    height: 60px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.contact-item h4 {
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+}
+
+.contact-item p {
+    color: var(--gray);
+}
+
+.contact-form {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.contact-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Cairo', sans-serif;
+    transition: var(--transition);
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.contact-form button {
+    width: 100%;
+    justify-content: center;
+}
+
+@media (max-width: 992px) {
+    .about-grid,
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-hero h1 {
+        font-size: 2.5rem;
+    }
+    
+    .about-hero p {
+        font-size: 1.2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  emailjs.init("OLtN0o2YD3mIrVyDS"); // public key
+</script>
+<script>
+
+    // Contact Form
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const templateParams = {
+            name: document.getElementById("contactName").value,
+            email: document.getElementById("contactEmail").value,
+            message: document.getElementById("contactMessage").value,
+            time: new Date().toLocaleString()
+        };
+
+        emailjs.send("service_vyv224e", "template_1avkbd2", templateParams)
+            .then(function(response) {
+                alert("تم إرسال رسالتك بنجاح!");
+                document.getElementById("contactForm").reset();
+            }, function(error) {
+                alert("حدث خطأ أثناء الإرسال، حاول مرة أخرى.");
+                console.error(error);
+            });
+    });
+
+    // Newsletter Form (يمكن استخدام Template مختلف)
+    document.addEventListener("DOMContentLoaded", function() {
+
+    // Contact Form
+    const contactForm = document.getElementById("contactForm");
+    if(contactForm){
+        contactForm.addEventListener("submit", function(e){
+            e.preventDefault();
+
+            const templateParams = {
+                name: document.getElementById("contactName").value,
+                email: document.getElementById("contactEmail").value,
+                message: document.getElementById("contactMessage").value,
+                time: new Date().toLocaleString()
+            };
+
+            emailjs.send("service_vyv224e", "template_1avkbd2", templateParams)
+            .then(function(response){
+                alert("تم إرسال رسالتك بنجاح!");
+                contactForm.reset();
+            }, function(error){
+                alert("حدث خطأ أثناء الإرسال، حاول مرة أخرى.");
+                console.error(error);
+            });
+        });
+    }
+});
+</script>
+
+{% endblock %}

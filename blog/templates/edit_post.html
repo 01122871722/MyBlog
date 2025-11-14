@@ -1,0 +1,417 @@
+{% extends 'base.html' %}
+
+{% block title %}تعديل المقال{% endblock %}
+
+{% block content %}
+<section class="create-post-section">
+    <div class="container">
+        <div class="create-post-card">
+            <div class="create-post-header">
+                <h2><i class="fas fa-edit"></i> تعديل المقال</h2>
+                <p>قم بتعديل مقالك</p>
+            </div>
+            
+            <form id="editPostForm" class="create-post-form">
+                <div class="form-group">
+                    <label for="title">
+                        <i class="fas fa-heading"></i> عنوان المقال *
+                    </label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category">
+                            <i class="fas fa-folder"></i> الفئة *
+                        </label>
+                        <select id="category" name="category" required>
+                            <option value="">اختر الفئة</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status">
+                            <i class="fas fa-toggle-on"></i> حالة المقال
+                        </label>
+                        <select id="status" name="status">
+                            <option value="draft">مسودة</option>
+                            <option value="published">منشور</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tags">
+                        <i class="fas fa-tags"></i> الوسوم
+                    </label>
+                    <div id="tagsContainer" class="tags-container"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="image">
+                        <i class="fas fa-image"></i> صورة المقال
+                    </label>
+                    <div class="image-upload">
+                        <input type="file" id="image" name="image" accept="image/*" style="display: none;">
+                        <button type="button" class="upload-btn" onclick="document.getElementById('image').click()">
+                            <i class="fas fa-cloud-upload-alt"></i> تغيير الصورة
+                        </button>
+                        <div id="imagePreview" class="image-preview"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="excerpt">
+                        <i class="fas fa-quote-right"></i> ملخص المقال
+                    </label>
+                    <textarea id="excerpt" name="excerpt" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">
+                        <i class="fas fa-edit"></i> محتوى المقال *
+                    </label>
+                    <textarea id="content" name="content" rows="15" required></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-large">
+                        <i class="fas fa-save"></i> حفظ التعديلات
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-large" onclick="window.history.back()">
+                        <i class="fas fa-times"></i> إلغاء
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.create-post-section {
+    min-height: calc(100vh - 80px);
+    padding: 4rem 0;
+    background: var(--light);
+}
+
+.create-post-card {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: var(--radius);
+    padding: 3rem;
+    box-shadow: var(--shadow);
+    animation: slideUp 0.6s ease-out;
+}
+
+.create-post-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.create-post-header h2 {
+    font-size: 2.5rem;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.create-post-header h2 i {
+    color: var(--primary);
+}
+
+.create-post-header p {
+    color: var(--gray);
+    font-size: 1.1rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 2rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    color: var(--dark);
+    font-size: 1.05rem;
+}
+
+.form-group label i {
+    color: var(--primary);
+    margin-left: 8px;
+}
+
+.form-group input[type="text"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'Cairo', sans-serif;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.tag-checkbox {
+    display: none;
+}
+
+.tag-label {
+    padding: 0.6rem 1.2rem;
+    background: var(--light);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.95rem;
+}
+
+.tag-checkbox:checked + .tag-label {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.tag-label:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.image-upload {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.upload-btn {
+    padding: 1rem 2rem;
+    background: var(--light);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    color: var(--gray);
+}
+
+.upload-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.image-preview {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--border);
+}
+
+.btn-large {
+    padding: 1.2rem 3rem;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn-large {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentPost = null;
+let postSlug = '';
+
+// Load post data
+async function loadPostData() {
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    postSlug = pathParts[1]; // edit-post/slug-here
+    
+    try {
+        showLoading();
+        
+        // Load post
+        currentPost = await apiCall(`/posts/${postSlug}/`);
+        
+        // Check if user is the author
+        const user = await checkAuth();
+        if (!user || user.id !== currentPost.author.id) {
+            alert('ليس لديك صلاحية لتعديل هذا المقال');
+            window.location.href = '/';
+            return;
+        }
+        
+        // Load categories and tags
+        const [categories, tags] = await Promise.all([
+            apiCall('/categories/'),
+            apiCall('/tags/')
+        ]);
+        
+        // Populate categories
+        const categorySelect = document.getElementById('category');
+        categories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            if (currentPost.category && cat.id === currentPost.category.id) {
+                option.selected = true;
+            }
+            categorySelect.appendChild(option);
+        });
+        
+        // Populate tags
+        const tagsContainer = document.getElementById('tagsContainer');
+        tagsContainer.innerHTML = tags.map(tag => {
+            const isChecked = currentPost.tags.some(t => t.id === tag.id);
+            return `
+                <div>
+                    <input type="checkbox" id="tag_${tag.id}" class="tag-checkbox" value="${tag.id}" ${isChecked ? 'checked' : ''}>
+                    <label for="tag_${tag.id}" class="tag-label">
+                        <i class="fas fa-tag"></i> ${tag.name}
+                    </label>
+                </div>
+            `;
+        }).join('');
+        
+        // Fill form
+        document.getElementById('title').value = currentPost.title;
+        document.getElementById('content').value = currentPost.content;
+        document.getElementById('excerpt').value = currentPost.excerpt || '';
+        document.getElementById('status').value = currentPost.status;
+        
+        // Show current image
+        if (currentPost.image) {
+            document.getElementById('imagePreview').innerHTML = 
+                `<img src="${currentPost.image}" alt="Current image">`;
+        }
+        
+        hideLoading();
+    } catch (error) {
+        hideLoading();
+        console.error('Error loading post:', error);
+        alert('حدث خطأ في تحميل المقال');
+        window.location.href = '/my-posts/';
+    }
+}
+
+// Image preview
+document.getElementById('image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imagePreview').innerHTML = 
+                `<img src="${e.target.result}" alt="Preview">`;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Submit form
+document.getElementById('editPostForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const selectedTags = Array.from(document.querySelectorAll('.tag-checkbox:checked'))
+        .map(cb => parseInt(cb.value));
+    
+    const imageFile = document.getElementById('image').files[0];
+    
+    try {
+        showLoading();
+        
+        const formData = new FormData();
+        formData.append('title', document.getElementById('title').value.trim());
+        formData.append('content', document.getElementById('content').value.trim());
+        formData.append('excerpt', document.getElementById('excerpt').value.trim());
+        formData.append('category', document.getElementById('category').value);
+        formData.append('status', document.getElementById('status').value);
+        
+        selectedTags.forEach(tagId => {
+            formData.append('tags', tagId);
+        });
+        
+        if (imageFile) {
+            formData.append('image', imageFile);
+        }
+        
+        const response = await fetch(`${API_URL}/posts/${postSlug}/`, {
+            method: 'PATCH',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            credentials: 'include',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error response:', errorData);
+            throw new Error('Failed to update post');
+        }
+        
+        const data = await response.json();
+        
+        hideLoading();
+        alert('تم تحديث المقال بنجاح!');
+        window.location.href = `/post/${data.slug}/`;
+        
+    } catch (error) {
+        hideLoading();
+        console.error('Error updating post:', error);
+        alert('حدث خطأ في تحديث المقال');
+    }
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', loadPostData);
+</script>
+{% endblock %}
